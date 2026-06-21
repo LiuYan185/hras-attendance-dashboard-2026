@@ -29,13 +29,14 @@ body{font-family:'Microsoft YaHei',Arial,sans-serif;font-size:12px;background:#f
 .card-section-num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:#2c5ba8;color:#fff;font-size:11px;font-weight:700}
 
 /* INSIGHT CARDS */
-.insight-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.insight-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
 .insight-card{background:#fff;border-radius:8px;padding:18px 20px;box-shadow:0 2px 8px rgba(0,0,0,.08);position:relative;overflow:hidden;transition:transform .15s,box-shadow .15s;cursor:pointer}
 .insight-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.12)}
 .insight-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px}
 .insight-card.ic-blue::before{background:linear-gradient(135deg,#1a3a6b 0%,#2c5ba8 100%)}
 .insight-card.ic-orange::before{background:linear-gradient(135deg,#c2751a,#e8a33c)}
 .insight-card.ic-green::before{background:linear-gradient(135deg,#1a7a4a,#34d399)}
+.insight-card.ic-purple::before{background:linear-gradient(135deg,#4a3a9b,#7c6dd8)}
 .insight-card .ic-label{font-size:11px;font-weight:600;color:#666;letter-spacing:.5px;margin-bottom:6px}
 .insight-card .ic-value{font-size:34px;font-weight:900;line-height:1.1;color:#1a3a6b;margin-bottom:4px}
 .insight-card .ic-desc{font-size:12px;color:#666;line-height:1.5}
@@ -46,15 +47,15 @@ body{font-family:'Microsoft YaHei',Arial,sans-serif;font-size:12px;background:#f
 .insight-card:hover .click-hint{color:#94a3b8}
 
 /* TOP3 LIST */
-.top3-list{display:flex;gap:6px;margin-top:6px}
-.top3-item{display:flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;background:#f5f7fa;transition:background .15s}
+.top3-list{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap}
+.top3-item{display:flex;align-items:center;gap:3px;padding:2px 5px;border-radius:6px;background:#f5f7fa;transition:background .15s}
 .top3-item:hover{background:#f0f4fa}
 .top3-rank{width:20px;height:20px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;flex-shrink:0}
 .top3-rank.r1{background:#e3f2fd;color:#1565c0}
 .top3-rank.r2{background:#e8f5e9;color:#2e7d32}
 .top3-rank.r3{background:#fff3e0;color:#e65100}
-.top3-name{font-size:11px;font-weight:600;color:#333;white-space:nowrap}
-.top3-val{font-size:11px;font-weight:800;color:#1a3a6b;flex-shrink:0}
+.top3-name{font-size:9.5px;font-weight:600;color:#333;white-space:nowrap}
+.top3-val{font-size:9.5px;font-weight:800;color:#1a3a6b;flex-shrink:0}
 
 /* SECTION HEADERS */
 .sec-hd{display:flex;align-items:center;gap:10px;margin:24px 0 14px}
@@ -186,9 +187,13 @@ body{font-family:'Microsoft YaHei',Arial,sans-serif;font-size:12px;background:#f
 ::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:#f5f7fa;border-radius:3px}::-webkit-scrollbar-thumb{background:#dde3ef;border-radius:3px}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .animate-in{animation:fadeIn .4s ease-out both}.delay-1{animation-delay:.1s}.delay-2{animation-delay:.2s}.delay-3{animation-delay:.3s}.delay-4{animation-delay:.4s}
-@media(max-width:1024px){.insight-grid{grid-template-columns:1fr}.grid-2{grid-template-columns:1fr}.risk-split{grid-template-columns:1fr}}
+@media(max-width:1024px){.insight-grid{grid-template-columns:1fr 1fr}.grid-2{grid-template-columns:1fr}.risk-split{grid-template-columns:1fr}}
 @media print{.top-bar{position:static}.filter-bar,.top-bar .actions{display:none}}
 </style>
+<meta property="og:title" content="HRAS国内考勤分析看板">
+<meta property="og:description" content="HRAS国内员工考勤分析看板 2026">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://liuyan185.github.io/hras-attendance-dashboard-2026/">
 </head>
 <body>
 
@@ -209,11 +214,11 @@ body{font-family:'Microsoft YaHei',Arial,sans-serif;font-size:12px;background:#f
     <div class="ic-badge ok" id="iv-people-badge">—</div>
     <span class="click-hint">点击查看详情 ›</span>
   </div>
-  <div class="insight-card ic-orange" onclick="drillFlow()">
-    <div class="ic-label">日均审批加班</div>
-    <div class="ic-value" id="iv-flow">—</div>
-    <div class="ic-desc" id="iv-flow-desc"></div>
-    <div class="ic-badge" id="iv-flow-badge"></div>
+  <div class="insight-card ic-purple" onclick="drillDailyHours()">
+    <div class="ic-label">日均工时</div>
+    <div class="ic-value" id="iv-dh">—</div>
+    <div class="ic-desc" id="iv-dh-desc"></div>
+    <div class="ic-badge" id="iv-dh-badge"></div>
     <span class="click-hint">点击查看详情 ›</span>
   </div>
   <div class="insight-card ic-green" onclick="drillOT()">
@@ -221,6 +226,13 @@ body{font-family:'Microsoft YaHei',Arial,sans-serif;font-size:12px;background:#f
     <div class="ic-value" id="iv-ot">—</div>
     <div class="ic-desc" id="iv-ot-desc"></div>
     <div class="ic-badge" id="iv-ot-badge"></div>
+    <span class="click-hint">点击查看详情 ›</span>
+  </div>
+  <div class="insight-card ic-orange" onclick="drillFlow()">
+    <div class="ic-label">日均审批加班</div>
+    <div class="ic-value" id="iv-flow">—</div>
+    <div class="ic-desc" id="iv-flow-desc"></div>
+    <div class="ic-badge" id="iv-flow-badge"></div>
     <span class="click-hint">点击查看详情 ›</span>
   </div>
 </div>
@@ -300,11 +312,11 @@ body{font-family:'Microsoft YaHei',Arial,sans-serif;font-size:12px;background:#f
   <div class="sec-hd"><h2>人员分布分析</h2><span class="sec-line"></span><span class="sec-badge">点击柱形查看人员明细</span></div>
   <div class="grid-2">
     <div class="chart-card"><h3>日均工作时长分布</h3><canvas id="chartHoursDist" height="300" style="cursor:pointer"></canvas></div>
-    <div class="chart-card"><h3>工作日日均加班分布</h3><canvas id="chartOtDist" height="300" style="cursor:pointer"></canvas></div>
+    <div class="chart-card"><div style="display:flex;align-items:center;justify-content:space-between"><h3 style="margin:0">工作日日均加班分布</h3><select id="otDistType" onchange="renderOtDist()" style="font-size:11px;padding:2px 6px;border:1px solid #d0d5dd;border-radius:4px"><option value="clock">打卡加班</option><option value="flow">审批加班</option></select></div><canvas id="chartOtDist" height="300" style="cursor:pointer"></canvas></div>
   </div>
   <div class="filter-bar" style="margin-bottom:12px">
-        <label>关注类型：</label><select id="personRiskType" onchange="renderPersonRisk()"><option value="wd_ot">工作日加班时长</option><option value="nwd_ot">非工作日加班时长</option><option value="daily_hours">日均工时</option></select>
-        <label>加班维度：</label><select id="riskOtType" onchange="renderPersonRisk()"><option value="clock">打卡加班</option><option value="flow">审批加班</option></select>
+        <label>关注类型：</label><select id="personRiskType" onchange="renderPersonRisk();renderPersonScatter()"><option value="wd_ot">工作日日均加班时长</option><option value="nwd_ot">非工作日日均加班时长</option><option value="daily_hours">日均工时</option></select>
+        <label>加班维度：</label><select id="riskOtType" onchange="renderPersonRisk();renderPersonScatter()"><option value="clock">打卡加班</option><option value="flow">审批加班</option></select>
         <label>状态：</label><select id="riskStatusFilter" onchange="renderPersonRisk();renderPersonScatter()"><option value="">全部</option><option value="正式">正式</option><option value="试用">试用</option></select>
         <label>部门：</label><select id="riskDeptFilter" onchange="renderPersonRisk();renderPersonScatter()"><option value="">全部</option></select>
       </div>
@@ -323,7 +335,7 @@ body{font-family:'Microsoft YaHei',Arial,sans-serif;font-size:12px;background:#f
   </div>
   <div class="person-table-wrap">
     <table class="person-table"><thead><tr>
-      <th>工号</th><th>姓名</th><th>部门</th><th>状态</th><th>入职日期</th><th>工作日</th><th>日均工时</th><th>工作日<br>打卡加班</th><th>工作日<br>审批加班</th><th>非工作日<br>打卡加班</th><th>非工作日<br>审批加班</th><th>总打卡<br>加班</th><th>加班/工作日</th>
+      <th>工号</th><th>姓名</th><th>部门</th><th>状态</th><th>入职日期</th><th>工作日天数</th><th>日均工时</th><th>工作日<br>打卡加班</th><th>工作日<br>审批加班</th><th>非工作日<br>打卡加班</th><th>非工作日<br>审批加班</th><th>总打卡<br>加班</th><th>加班/工作日</th>
     </tr></thead><tbody id="personTbody"></tbody></table>
   </div>
   <div class="pager" id="personPager"></div>
@@ -342,6 +354,7 @@ body{font-family:'Microsoft YaHei',Arial,sans-serif;font-size:12px;background:#f
   <div class="drill-filters">
     <label>部门：</label><select id="drillDeptFilter" onchange="drillPage=1;renderDrillTable()"><option value="">全部</option></select>
     <label>状态：</label><select id="drillStatusFilter" onchange="drillPage=1;renderDrillTable()"><option value="">全部</option><option value="正式">正式</option><option value="试用">试用</option><option value="离职">离职</option></select>
+    <label>搜索：</label><input type="text" id="drillSearch" placeholder="姓名/工号" oninput="drillPage=1;renderDrillTable()" style="padding:3px 8px;border:1px solid #d0d5dd;border-radius:4px;font-size:11px;width:120px">
   </div>
   <div class="drill-body"><table><thead id="drillThead"></thead><tbody id="drillTbody"></tbody></table></div>
   <div class="drill-pager" id="drillPager"></div>
@@ -383,13 +396,14 @@ function openDrill(title,persons,type){
   const sel=document.getElementById('drillDeptFilter');sel.innerHTML='<option value="">全部</option>';
   [...new Set(persons.map(p=>p.dept))].sort().forEach(d=>{const o=document.createElement('option');o.value=d;o.textContent=d;sel.appendChild(o)});
   document.getElementById('drillStatusFilter').value='';
+  document.getElementById('drillSearch').value='';
   renderDrillTable();
   document.getElementById('drillOverlay').classList.add('show');
 }
 function closeDrill(){document.getElementById('drillOverlay').classList.remove('show')}
 function renderDrillTable(){
-  const df=document.getElementById('drillDeptFilter').value,sf=document.getElementById('drillStatusFilter').value;
-  let filtered=drillData.filter(p=>{if(df&&p.dept!==df)return false;if(sf&&p.status!==sf)return false;return true});
+  const df=document.getElementById('drillDeptFilter').value,sf=document.getElementById('drillStatusFilter').value,search=(document.getElementById('drillSearch').value||'').toLowerCase();
+  let filtered=drillData.filter(p=>{if(df&&p.dept!==df)return false;if(sf&&p.status!==sf)return false;if(search&&p.name.toLowerCase().indexOf(search)<0&&p.id.toLowerCase().indexOf(search)<0)return false;return true});
   const total=filtered.length,pages=Math.max(1,Math.ceil(total/DRILL_PS));
   if(drillPage>pages)drillPage=pages;
   const start=(drillPage-1)*DRILL_PS,slice=filtered.slice(start,start+DRILL_PS);
@@ -397,15 +411,18 @@ function renderDrillTable(){
   const sc=p=>{const s=p.status;return s==='正式'?'color:#2e7d32;background:#e8f5e9':s==='试用'?'color:#e65100;background:#fff3e0':'color:#e02020;background:#fef2f2'};
   const statusCell=p=>`<span style="padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;${sc(p)}">${p.status}</span>`;
   const dateCell=p=>`<td>${dateOrResign(p)}</td>`;
-  if(drillType==='flow'){
-    document.getElementById('drillThead').innerHTML='<tr><th>工号</th><th>姓名</th><th>部门</th><th>状态</th><th id="drillDateCol">入职日期</th><th>工作日</th><th>日均工时</th><th class="grp-flow">工作日<br>日均审批加班</th><th class="grp-flow">非工作日<br>日均审批加班</th><th class="grp-flow">总审批<br>加班</th></tr>';
-    document.getElementById('drillTbody').innerHTML=slice.map(p=>{const tf=p.wd_ot_flow+p.nwd_ot_flow;return`<tr><td>${p.id}</td><td>${p.name}</td><td>${p.dept}</td><td>${statusCell(p)}</td>${dateCell(p)}<td>${p.work_days}</td><td>${fmt(p.avg_daily_hours,1)}</td><td>${fmt(p.wd_ot_flow_avg)}</td><td>${fmt(p.nwd_ot_flow_avg)}</td><td>${fmt(tf,1)}</td></tr>`}).join('');
+  if(drillType==='dailyhours'){
+    document.getElementById('drillThead').innerHTML='<tr><th>工号</th><th>姓名</th><th>部门</th><th>状态</th><th id="drillDateCol">入职日期</th><th>工作日天数</th><th>日均工时</th></tr>';
+    document.getElementById('drillTbody').innerHTML=slice.map(p=>`<tr><td>${p.id}</td><td>${p.name}</td><td>${p.dept}</td><td>${statusCell(p)}</td>${dateCell(p)}<td>${p.work_days}</td><td>${fmt(p.avg_daily_hours,1)}</td></tr>`).join('');
+  } else if(drillType==='flow'){
+    document.getElementById('drillThead').innerHTML='<tr><th>工号</th><th>姓名</th><th>部门</th><th>状态</th><th id="drillDateCol">入职日期</th><th>工作日天数</th><th class="grp-flow">工作日<br>日均审批加班</th><th class="grp-flow">非工作日<br>日均审批加班</th><th class="grp-flow">总审批<br>加班</th></tr>';
+    document.getElementById('drillTbody').innerHTML=slice.map(p=>{const tf=p.wd_ot_flow+p.nwd_ot_flow;return`<tr><td>${p.id}</td><td>${p.name}</td><td>${p.dept}</td><td>${statusCell(p)}</td>${dateCell(p)}<td>${p.work_days}</td><td>${fmt(p.wd_ot_flow_avg)}</td><td>${fmt(p.nwd_ot_flow_avg)}</td><td>${fmt(tf,1)}</td></tr>`}).join('');
   } else if(drillType==='all'){
-    document.getElementById('drillThead').innerHTML='<tr><th>工号</th><th>姓名</th><th>部门</th><th>状态</th><th id="drillDateCol">入职日期</th><th>工作日</th><th>日均工时</th><th class="grp-clock">工作日<br>日均打卡加班</th><th class="grp-clock">非工作日<br>日均打卡加班</th><th class="grp-clock">总打卡<br>加班</th><th class="grp-flow">工作日<br>日均审批加班</th><th class="grp-flow">非工作日<br>日均审批加班</th><th class="grp-flow">总审批<br>加班</th></tr>';
+    document.getElementById('drillThead').innerHTML='<tr><th>工号</th><th>姓名</th><th>部门</th><th>状态</th><th id="drillDateCol">入职日期</th><th>工作日天数</th><th>日均工时</th><th class="grp-clock">工作日<br>日均打卡加班</th><th class="grp-clock">非工作日<br>日均打卡加班</th><th class="grp-clock">总打卡<br>加班</th><th class="grp-flow">工作日<br>日均审批加班</th><th class="grp-flow">非工作日<br>日均审批加班</th><th class="grp-flow">总审批<br>加班</th></tr>';
     document.getElementById('drillTbody').innerHTML=slice.map(p=>{const tf=p.wd_ot_flow+p.nwd_ot_flow;return`<tr><td>${p.id}</td><td>${p.name}</td><td>${p.dept}</td><td>${statusCell(p)}</td>${dateCell(p)}<td>${p.work_days}</td><td>${fmt(p.avg_daily_hours,1)}</td><td>${fmt(p.wd_ot_clock_avg)}</td><td>${fmt(p.nwd_ot_clock_avg)}</td><td>${fmt(p.total_ot_clock,1)}</td><td>${fmt(p.wd_ot_flow_avg)}</td><td>${fmt(p.nwd_ot_flow_avg)}</td><td>${fmt(tf,1)}</td></tr>`}).join('');
   } else {
-    document.getElementById('drillThead').innerHTML='<tr><th>工号</th><th>姓名</th><th>部门</th><th>状态</th><th id="drillDateCol">入职日期</th><th>工作日</th><th>日均工时</th><th class="grp-clock">工作日<br>日均打卡加班</th><th class="grp-clock">非工作日<br>日均打卡加班</th><th class="grp-clock">总打卡<br>加班</th></tr>';
-    document.getElementById('drillTbody').innerHTML=slice.map(p=>`<tr><td>${p.id}</td><td>${p.name}</td><td>${p.dept}</td><td>${statusCell(p)}</td>${dateCell(p)}<td>${p.work_days}</td><td>${fmt(p.avg_daily_hours,1)}</td><td>${fmt(p.wd_ot_clock_avg)}</td><td>${fmt(p.nwd_ot_clock_avg)}</td><td>${fmt(p.total_ot_clock,1)}</td></tr>`).join('');
+    document.getElementById('drillThead').innerHTML='<tr><th>工号</th><th>姓名</th><th>部门</th><th>状态</th><th id="drillDateCol">入职日期</th><th>工作日天数</th><th class="grp-clock">工作日<br>日均打卡加班</th><th class="grp-clock">非工作日<br>日均打卡加班</th><th class="grp-clock">总打卡<br>加班</th></tr>';
+    document.getElementById('drillTbody').innerHTML=slice.map(p=>`<tr><td>${p.id}</td><td>${p.name}</td><td>${p.dept}</td><td>${statusCell(p)}</td>${dateCell(p)}<td>${p.work_days}</td><td>${fmt(p.wd_ot_clock_avg)}</td><td>${fmt(p.nwd_ot_clock_avg)}</td><td>${fmt(p.total_ot_clock,1)}</td></tr>`).join('');
   }
   // Update date column header if filter is "离职"
   const sfv=document.getElementById('drillStatusFilter').value;
@@ -445,8 +462,16 @@ function initInsightCards(){
   document.getElementById('iv-ot').textContent=fmt(avgOt,2)+'h';
   const topOt=[...DEPT.filter(d=>d.dept!=='合计')].sort((a,b)=>b.wd_ot_avg-a.wd_ot_avg).slice(0,3);
   document.getElementById('iv-ot-desc').innerHTML=top3Html(topOt,'wd_ot_avg');
+
+  const avgDH=PERS.reduce(function(s,p){return s+p.avg_daily_hours},0)/PERS.length;
+  document.getElementById('iv-dh').textContent=fmt(avgDH,1)+'h';
+  const topDH=[...DEPT.filter(d=>d.dept!=='合计')].sort((a,b)=>b.avg_daily_hours-a.avg_daily_hours).slice(0,3);
+  document.getElementById('iv-dh-desc').innerHTML=top3Html(topDH,'avg_daily_hours');
+  document.getElementById('iv-dh-badge').textContent='全员均值';
+  document.getElementById('iv-dh-badge').className='ic-badge ok';
 }
 function drillPeople(){openDrill('统计覆盖人员明细',PERS.slice().sort((a,b)=>b.avg_daily_hours-a.avg_daily_hours),'all')}
+function drillDailyHours(){openDrill('日均工时 — 人员排名',PERS.slice().sort((a,b)=>b.avg_daily_hours-a.avg_daily_hours),'dailyhours')}
 function drillFlow(){openDrill('日均审批加班 — 人员排名',PERS.slice().sort((a,b)=>b.wd_ot_flow_avg-a.wd_ot_flow_avg),'flow')}
 function drillOT(){openDrill('工作日打卡加班 — 人员排名',PERS.slice().sort((a,b)=>b.wd_ot_clock_avg-a.wd_ot_clock_avg),'clock')}
 
@@ -460,7 +485,7 @@ function renderOverview(){
   dc('chartDailyHoursRank');const s2=[...D].sort((a,b)=>b.avg_daily_hours-a.avg_daily_hours);
   charts['chartDailyHoursRank']=new Chart(document.getElementById('chartDailyHoursRank'),{type:'bar',data:{labels:s2.map(d=>d.dept),datasets:[{data:s2.map(d=>d.avg_daily_hours),backgroundColor:s2.map(d=>d.avg_daily_hours>=8.5?'#6b7fa0':d.avg_daily_hours>=7.5?'#b5883a':d.avg_daily_hours>=7?'#4a7ab5':'#4a9a6a'),borderRadius:4,barPercentage:.7}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'right',font:{size:10,weight:'bold'},formatter:v=>fmt(v,1)+'h'}},scales:{x:{grid:{color:'#e8ecf2'},min:3},y:{grid:{display:false}}}}});
   dc('chartNwdRatio');const s3=[...D].sort((a,b)=>(b.total_ot>0?b.nwd_ot_total/b.total_ot:0)-(a.total_ot>0?a.nwd_ot_total/a.total_ot:0));
-  charts['chartNwdRatio']=new Chart(document.getElementById('chartNwdRatio'),{type:'bar',data:{labels:s3.map(d=>d.dept),datasets:[{label:'工作日加班',data:s3.map(d=>d.total_ot>0?(d.wd_ot_total/d.total_ot*100):100),backgroundColor:C.blue+'cc'},{label:'非工作日加班',data:s3.map(d=>d.total_ot>0?(d.nwd_ot_total/d.total_ot*100):0),backgroundColor:C.or+'cc'}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:10}}},datalabels:{display:true,color:'#fff',font:{size:9,weight:'bold'},formatter:v=>v>=5?Math.round(v)+'%':''}},scales:{x:{stacked:true,max:100,grid:{color:'#e8ecf2'},title:{display:true,text:'%'},ticks:{callback:v=>v+'%'}},y:{stacked:true,grid:{display:false}}}}});
+  charts['chartNwdRatio']=new Chart(document.getElementById('chartNwdRatio'),{type:'bar',data:{labels:s3.map(d=>d.dept),datasets:[{label:'工作日加班',data:s3.map(d=>d.total_ot>0?(d.wd_ot_total/d.total_ot*100):100),backgroundColor:C.blue+'cc'},{label:'非工作日加班',data:s3.map(d=>d.total_ot>0?(d.nwd_ot_total/d.total_ot*100):0),backgroundColor:C.or+'cc'}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:10}}},datalabels:{display:true,color:'#fff',font:{size:9,weight:'bold'},formatter:v=>v>=5?Math.round(v)+'%':''}},scales:{x:{stacked:true,max:100,grid:{color:'#e8ecf2'},title:{display:true,text:'%'},ticks:{callback:v=>v+'%'}},y:{stacked:true,grid:{display:false},ticks:{autoSkip:false,font:{size:10}}}}}});
   // Bubble Matrix — bubble size = department person count
   dc('chartHealthMatrix');
   var deptCounts={};PERS.forEach(function(p){if(p.status!=='离职'){deptCounts[p.dept]=(deptCounts[p.dept]||0)+1}});
@@ -471,7 +496,7 @@ function renderOverview(){
 function renderStructure(){
   const D=DEPT.filter(d=>d.dept!=='合计'),L=D.map(d=>d.dept);
   dc('chartOtStruct');charts['chartOtStruct']=new Chart(document.getElementById('chartOtStruct'),{type:'bar',data:{labels:L,datasets:[{label:'工作日打卡加班',data:D.map(d=>d.wd_ot_total),backgroundColor:C.blue+'cc'},{label:'非工作日打卡加班',data:D.map(d=>d.nwd_ot_total),backgroundColor:C.or+'cc'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:10}},datalabels:{display:true,anchor:'center',align:'center',font:{size:9,weight:'bold'},color:'#fff',formatter:function(v){return v>=80?Math.round(v):''}}},scales:{x:{stacked:true,grid:{display:false},ticks:{maxRotation:45}},y:{stacked:true,grid:{color:'#e8ecf2'},title:{display:true,text:'小时'}}}}});
-  dc('chartClockVsFlow');charts['chartClockVsFlow']=new Chart(document.getElementById('chartClockVsFlow'),{type:'bar',data:{labels:L,datasets:[{label:'打卡加班日均',data:D.map(d=>d.wd_ot_avg),backgroundColor:C.blue+'bb',borderRadius:3},{label:'审批加班日均',data:D.map(d=>d.wd_flow_avg),backgroundColor:C.gl+'bb',borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:10}},datalabels:{display:true,anchor:'end',align:'end',font:{size:9,weight:'bold'},color:'#555',formatter:function(v){return v>=0.3?fmt(v)+'h':''}}},scales:{x:{grid:{display:false},ticks:{maxRotation:45}},y:{grid:{color:'#e8ecf2'},title:{display:true,text:'小时/工作日'}}}}});
+  dc('chartClockVsFlow');charts['chartClockVsFlow']=new Chart(document.getElementById('chartClockVsFlow'),{type:'bar',data:{labels:L,datasets:[{label:'打卡加班日均',data:D.map(d=>d.wd_ot_avg),backgroundColor:C.blue+'bb',borderRadius:3},{label:'审批加班日均',data:D.map(d=>d.wd_flow_avg),backgroundColor:C.gl+'bb',borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:10}},datalabels:{display:true,anchor:'end',align:'end',font:{size:9,weight:'bold'},color:'#555',formatter:function(v){return v>=0.3?fmt(v):''}}},scales:{x:{grid:{display:false},ticks:{maxRotation:45}},y:{grid:{color:'#e8ecf2'},title:{display:true,text:'小时/工作日'}}}}});
   // Efficiency Scatter — redesigned with legend + median lines
   dc('chartEfficiency');
   var medH=[...D].sort(function(a,b){return a.avg_daily_hours-b.avg_daily_hours})[Math.floor(D.length/2)].avg_daily_hours;
@@ -514,22 +539,36 @@ function renderTrend(){
 const hoursBins=[{min:0,max:6,label:'< 6h'},{min:6,max:6.5,label:'6~6.5'},{min:6.5,max:7,label:'6.5~7'},{min:7,max:7.5,label:'7~7.5'},{min:7.5,max:8,label:'7.5~8'},{min:8,max:8.5,label:'8~8.5'},{min:8.5,max:9,label:'8.5~9'},{min:9,max:9.5,label:'9~9.5'},{min:9.5,max:10,label:'9.5~10'},{min:10,max:99,label:'≥ 10h'}];
 const otBins=[{min:0,max:0.25,label:'< 0.25'},{min:0.25,max:0.5,label:'0.25~0.5'},{min:0.5,max:0.75,label:'0.5~0.75'},{min:0.75,max:1,label:'0.75~1'},{min:1,max:1.5,label:'1~1.5'},{min:1.5,max:2,label:'1.5~2'},{min:2,max:2.5,label:'2~2.5'},{min:2.5,max:3,label:'2.5~3'},{min:3,max:99,label:'≥ 3h'}];
 
+function renderOtDist(){
+  var otType=document.getElementById('otDistType').value;
+  var field=otType==='clock'?'wd_ot_clock_avg':'wd_ot_flow_avg';
+  var label=otType==='clock'?'打卡加班':'审批加班';
+  dc('chartOtDist');var oC=otBins.map(b=>PERS.filter(p=>p[field]>=b.min&&p[field]<b.max).length);
+  charts['chartOtDist']=new Chart(document.getElementById('chartOtDist'),{type:'bar',data:{labels:otBins.map(b=>b.label),datasets:[{data:oC,backgroundColor:otBins.map(b=>b.min>=2?'#6b7fa099':b.min>=1?'#b5883a99':b.min>=0.5?'#4a7ab599':'#4a9a6a99'),borderRadius:3,barPercentage:.8}]},options:{responsive:true,maintainAspectRatio:false,onClick:(e,els)=>{if(els.length>0){const b=otBins[els[0].index];openDrill('工作日日均'+label+' '+b.label+'h',PERS.filter(p=>p[field]>=b.min&&p[field]<b.max).sort((a,b)=>b[field]-a[field]),otType==='clock'?'clock':'flow')}},plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',font:{size:10,weight:'bold'},formatter:v=>v>0?v:''},tooltip:{callbacks:{title:ctx=>'日均'+label+' '+otBins[ctx[0].dataIndex].label+'h',label:ctx=>ctx.raw+'人 (点击查看明细)'}},},scales:{x:{grid:{display:false},title:{display:true,text:'工作日日均'+label+' (h)'},ticks:{font:{size:10}}},y:{grid:{color:'#e8ecf2'},title:{display:true,text:'人数'}}}}});
+}
 function renderPersonnel(){
   dc('chartHoursDist');const hC=hoursBins.map(b=>PERS.filter(p=>p.avg_daily_hours>=b.min&&p.avg_daily_hours<b.max).length);
-  charts['chartHoursDist']=new Chart(document.getElementById('chartHoursDist'),{type:'bar',data:{labels:hoursBins.map(b=>b.label),datasets:[{data:hC,backgroundColor:hoursBins.map(b=>b.min>=9?'#6b7fa099':b.min>=8?'#b5883a99':b.min>=7?'#4a7ab599':'#4a9a6a99'),borderRadius:3,barPercentage:.8}]},options:{responsive:true,maintainAspectRatio:false,onClick:(e,els)=>{if(els.length>0){const b=hoursBins[els[0].index];openDrill('日均工作时长 '+b.label+'h',PERS.filter(p=>p.avg_daily_hours>=b.min&&p.avg_daily_hours<b.max).sort((a,b)=>b.avg_daily_hours-a.avg_daily_hours),'clock')}},plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',font:{size:10,weight:'bold'},formatter:v=>v>0?v:''},tooltip:{callbacks:{title:ctx=>'日均工时 '+hoursBins[ctx[0].dataIndex].label+'h',label:ctx=>ctx.raw+'人 (点击查看明细)'}},},scales:{x:{grid:{display:false},title:{display:true,text:'日均工作时长 (h)'},ticks:{font:{size:10}}},y:{grid:{color:'#e8ecf2'},title:{display:true,text:'人数'}}}}});
-  dc('chartOtDist');const oC=otBins.map(b=>PERS.filter(p=>p.wd_ot_clock_avg>=b.min&&p.wd_ot_clock_avg<b.max).length);
-  charts['chartOtDist']=new Chart(document.getElementById('chartOtDist'),{type:'bar',data:{labels:otBins.map(b=>b.label),datasets:[{data:oC,backgroundColor:otBins.map(b=>b.min>=2?'#6b7fa099':b.min>=1?'#b5883a99':b.min>=0.5?'#4a7ab599':'#4a9a6a99'),borderRadius:3,barPercentage:.8}]},options:{responsive:true,maintainAspectRatio:false,onClick:(e,els)=>{if(els.length>0){const b=otBins[els[0].index];openDrill('工作日日均加班 '+b.label+'h',PERS.filter(p=>p.wd_ot_clock_avg>=b.min&&p.wd_ot_clock_avg<b.max).sort((a,b)=>b.wd_ot_clock_avg-a.wd_ot_clock_avg),'clock')}},plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',font:{size:10,weight:'bold'},formatter:v=>v>0?v:''},tooltip:{callbacks:{title:ctx=>'日均加班 '+otBins[ctx[0].dataIndex].label+'h',label:ctx=>ctx.raw+'人 (点击查看明细)'}},},scales:{x:{grid:{display:false},title:{display:true,text:'工作日日均加班 (h)'},ticks:{font:{size:10}}},y:{grid:{color:'#e8ecf2'},title:{display:true,text:'人数'}}}}});
+  charts['chartHoursDist']=new Chart(document.getElementById('chartHoursDist'),{type:'bar',data:{labels:hoursBins.map(b=>b.label),datasets:[{data:hC,backgroundColor:hoursBins.map(b=>b.min>=9?'#6b7fa099':b.min>=8?'#b5883a99':b.min>=7?'#4a7ab599':'#4a9a6a99'),borderRadius:3,barPercentage:.8}]},options:{responsive:true,maintainAspectRatio:false,onClick:(e,els)=>{if(els.length>0){const b=hoursBins[els[0].index];openDrill('日均工作时长 '+b.label+'h',PERS.filter(p=>p.avg_daily_hours>=b.min&&p.avg_daily_hours<b.max).sort((a,b)=>b.avg_daily_hours-a.avg_daily_hours),'dailyhours')}},plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'end',font:{size:10,weight:'bold'},formatter:v=>v>0?v:''},tooltip:{callbacks:{title:ctx=>'日均工时 '+hoursBins[ctx[0].dataIndex].label+'h',label:ctx=>ctx.raw+'人 (点击查看明细)'}},},scales:{x:{grid:{display:false},title:{display:true,text:'日均工作时长 (h)'},ticks:{font:{size:10}}},y:{grid:{color:'#e8ecf2'},title:{display:true,text:'人数'}}}}});
+  renderOtDist();
   renderPersonScatter();
 }
 
 /* ===== PERSON SCATTER (responds to risk filters) ===== */
+var _allDepts=[];PERS.forEach(function(p){if(_allDepts.indexOf(p.dept)<0)_allDepts.push(p.dept)});
+var _deptColorMap={};_allDepts.forEach(function(d,i){_deptColorMap[d]=i});
 function renderPersonScatter(){
+  var scType=document.getElementById('personRiskType').value;
+  var scOtType=document.getElementById('riskOtType').value;
   var scStatus=document.getElementById('riskStatusFilter').value;
   var scDept=document.getElementById('riskDeptFilter').value;
+  var yField,yLabel;
+  if(scType==='wd_ot'){yField=scOtType==='clock'?'wd_ot_clock_avg':'wd_ot_flow_avg';yLabel=scOtType==='clock'?'工作日日均打卡加班 (h)':'工作日日均审批加班 (h)'}
+  else if(scType==='nwd_ot'){yField=scOtType==='clock'?'nwd_ot_clock_avg':'nwd_ot_flow_avg';yLabel=scOtType==='clock'?'非工作日日均打卡加班 (h)':'非工作日日均审批加班 (h)'}
+  else{yField='avg_daily_hours';yLabel='日均工时 (h)'}
   var scPool=PERS.filter(function(p){if(scStatus&&p.status!==scStatus)return false;if(scDept&&p.dept!==scDept)return false;return true});
   var deptSet=[];scPool.forEach(function(p){if(deptSet.indexOf(p.dept)<0)deptSet.push(p.dept)});
   dc('chartPersonScatter');
-  charts['chartPersonScatter']=new Chart(document.getElementById('chartPersonScatter'),{type:'scatter',data:{datasets:deptSet.map(function(dept,i){return{label:dept,data:scPool.filter(function(p){return p.dept===dept}).map(function(p){return{x:p.avg_daily_hours,y:p.wd_ot_clock_avg,_p:p}}),backgroundColor:C.pal[i%C.pal.length]+'88',borderColor:C.pal[i%C.pal.length],borderWidth:1,pointRadius:3,pointHoverRadius:7}})},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{display:false},tooltip:{callbacks:{title:function(ctx){var p=ctx[0].dataset.data[ctx[0].dataIndex]._p;return p.name+' ('+p.id+')'},label:function(ctx){var p=ctx.dataset.data[ctx.dataIndex]._p;return[p.dept,'日均工时: '+fmt(p.avg_daily_hours,1)+'h','日均加班: '+fmt(p.wd_ot_clock_avg)+'h','总打卡加班: '+fmt(p.total_ot_clock,1)+'h']}}}},scales:{x:{title:{display:true,text:'日均工作时长 (h)',font:{weight:'bold'}},grid:{color:'#e8ecf2'},min:4,max:13},y:{title:{display:true,text:'工作日日均加班 (h)',font:{weight:'bold'}},grid:{color:'#e8ecf2'}}}}});
+  charts['chartPersonScatter']=new Chart(document.getElementById('chartPersonScatter'),{type:'scatter',data:{datasets:deptSet.map(function(dept){var ci=_deptColorMap[dept]||0;return{label:dept,data:scPool.filter(function(p){return p.dept===dept}).map(function(p){return{x:p.avg_daily_hours,y:p[yField],_p:p}}),backgroundColor:C.pal[ci%C.pal.length]+'88',borderColor:C.pal[ci%C.pal.length],borderWidth:1,pointRadius:3,pointHoverRadius:7}})},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{display:false},tooltip:{callbacks:{title:function(ctx){var p=ctx[0].dataset.data[ctx[0].dataIndex]._p;return p.name+' ('+p.id+')'},label:function(ctx){var p=ctx.dataset.data[ctx.dataIndex]._p;if(scType==='daily_hours')return[p.dept,'日均工时: '+fmt(p.avg_daily_hours,1)+'h'];var totLabel=scOtType==='clock'?'总打卡加班: '+fmt(p.total_ot_clock,1)+'h':'总审批加班: '+fmt(p.wd_ot_flow+p.nwd_ot_flow,1)+'h';return[p.dept,'日均工时: '+fmt(p.avg_daily_hours,1)+'h',yLabel+': '+fmt(p[yField])+'h',totLabel]}}}},scales:{x:{title:{display:true,text:'日均工作时长 (h)',font:{weight:'bold'}},grid:{color:'#e8ecf2'},min:4,max:13},y:{title:{display:true,text:yLabel,font:{weight:'bold'}},grid:{color:'#e8ecf2'}}}}});
 }
 
 /* ===== PERSON RISK (TOP10 + BOTTOM10, filters) ===== */
@@ -576,7 +615,7 @@ function renderPersonTable(){
   const isResignFilter=sf==='离职';
   const dateHeader=isResignFilter?'离职日期':'入职日期';
   const arrow=(field)=>{if(ptSortField===field)return ptSortDir==='desc'?' <span class="sort-arrow">▼</span>':' <span class="sort-arrow">▲</span>';return''};
-  document.querySelector('.person-table thead tr').innerHTML=`<th data-field="id">工号${arrow('id')}</th><th data-field="name">姓名${arrow('name')}</th><th data-field="dept">部门${arrow('dept')}</th><th data-field="status">状态${arrow('status')}</th><th data-field="date">${dateHeader}${arrow('date')}</th><th data-field="work_days">工作日${arrow('work_days')}</th><th data-field="avg_daily_hours">日均工时${arrow('avg_daily_hours')}</th><th data-field="wd_ot_clock_avg">工作日<br>打卡加班${arrow('wd_ot_clock_avg')}</th><th data-field="wd_ot_flow_avg">工作日<br>审批加班${arrow('wd_ot_flow_avg')}</th><th data-field="nwd_ot_clock_avg">非工作日<br>打卡加班${arrow('nwd_ot_clock_avg')}</th><th data-field="nwd_ot_flow_avg">非工作日<br>审批加班${arrow('nwd_ot_flow_avg')}</th><th data-field="total_ot_clock">总打卡<br>加班${arrow('total_ot_clock')}</th><th data-field="ot_per_wd">加班/工作日${arrow('ot_per_wd')}</th>`;
+  document.querySelector('.person-table thead tr').innerHTML=`<th data-field="id">工号${arrow('id')}</th><th data-field="name">姓名${arrow('name')}</th><th data-field="dept">部门${arrow('dept')}</th><th data-field="status">状态${arrow('status')}</th><th data-field="date">${dateHeader}${arrow('date')}</th><th data-field="work_days">工作日天数${arrow('work_days')}</th><th data-field="avg_daily_hours">日均工时${arrow('avg_daily_hours')}</th><th data-field="wd_ot_clock_avg">工作日<br>打卡加班${arrow('wd_ot_clock_avg')}</th><th data-field="wd_ot_flow_avg">工作日<br>审批加班${arrow('wd_ot_flow_avg')}</th><th data-field="nwd_ot_clock_avg">非工作日<br>打卡加班${arrow('nwd_ot_clock_avg')}</th><th data-field="nwd_ot_flow_avg">非工作日<br>审批加班${arrow('nwd_ot_flow_avg')}</th><th data-field="total_ot_clock">总打卡<br>加班${arrow('total_ot_clock')}</th><th data-field="ot_per_wd">加班/工作日${arrow('ot_per_wd')}</th>`;
   document.querySelectorAll('.person-table thead th[data-field]').forEach(th=>{th.onclick=()=>{const field=th.dataset.field;if(ptSortField===field){ptSortDir=ptSortDir==='desc'?'asc':'desc'}else{ptSortField=field;ptSortDir='desc'}ptPage=1;renderPersonTable()}});
   document.getElementById('personTbody').innerHTML=slice.map(p=>{const otPerWd=p.work_days>0?(p.total_ot_clock/p.work_days):0;const sc=p.status==='正式'?'background:#e8f5e9;color:#2e7d32':p.status==='试用'?'background:#fff3e0;color:#e65100':'background:#fef2f2;color:#e02020';const dv=isResignFilter?(p.resign_date||'—'):(p.hire_date||'—');return`<tr><td>${p.id}</td><td>${p.name}</td><td>${p.dept}</td><td><span style="padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;${sc}">${p.status}</span></td><td style="font-size:11px">${dv}</td><td>${p.work_days}</td><td class="${heatCls(p.avg_daily_hours,[7,8.5])}">${fmt(p.avg_daily_hours,1)}</td><td class="${heatCls(p.wd_ot_clock_avg,[0.7,1.5])}">${fmt(p.wd_ot_clock_avg)}</td><td class="${heatCls(p.wd_ot_flow_avg,[0.3,0.8])}">${fmt(p.wd_ot_flow_avg)}</td><td class="${heatCls(p.nwd_ot_clock_avg,[0.1,0.3])}">${fmt(p.nwd_ot_clock_avg)}</td><td class="${heatCls(p.nwd_ot_flow_avg,[0.05,0.2])}">${fmt(p.nwd_ot_flow_avg)}</td><td>${fmt(p.total_ot_clock,1)}</td><td>${fmt(otPerWd)}</td></tr>`}).join('');
   renderPager('personPager',ptPage,pages,p=>{ptPage=p;renderPersonTable()});
