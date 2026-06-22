@@ -6,7 +6,6 @@
 <title>HRAS国内考勤分析看板</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Microsoft YaHei',Arial,sans-serif;font-size:12px;background:#f5f7fa;color:#333;line-height:1.5}
@@ -256,7 +255,7 @@ body{font-family:'Microsoft YaHei',Arial,sans-serif;font-size:12px;background:#f
 
 <div class="top-bar">
   <div><h1>HRAS国内考勤分析看板</h1><div class="sub-info">统计周期：2026.01.01 — 2026.06.15</div></div>
-  <div style="display:flex;gap:8px;align-items:center"><button style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.4);color:#fff;padding:4px 14px;border-radius:4px;font-size:11px;cursor:pointer" onclick="toggleCaliber()">口径说明</button><button style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.4);color:#fff;padding:4px 14px;border-radius:4px;font-size:11px;cursor:pointer" onclick="exportPNG()">导出 PNG</button></div>
+  <div style="display:flex;gap:8px;align-items:center"><button style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.4);color:#fff;padding:4px 14px;border-radius:4px;font-size:11px;cursor:pointer" onclick="toggleCaliber()">口径说明</button></div>
 </div>
 
 <div class="main" id="dashboard">
@@ -656,9 +655,6 @@ function renderDeptTable(){
   renderRows([...D,DEPT_TOTAL]);
   document.querySelectorAll('.dept-table .sortable').forEach(function(th){th.onclick=function(){var col=th.dataset.col;var asc=th.classList.contains('sorted')&&!th.classList.contains('asc');document.querySelectorAll('.dept-table .sortable').forEach(function(h){h.classList.remove('sorted','asc')});th.classList.add('sorted');if(asc)th.classList.add('asc');renderRows([...[...D].sort(function(a,b){return asc?((a[col]||0)-(b[col]||0)):((b[col]||0)-(a[col]||0))}),DEPT_TOTAL])}});
 }
-
-/* ===== EXPORT ===== */
-function exportPNG(){var el=document.getElementById('dashboard');var h=el.scrollHeight;html2canvas(el,{scale:2,backgroundColor:'#f5f7fa',useCORS:true,scrollX:0,scrollY:-window.scrollY,width:el.scrollWidth,height:h,windowWidth:el.scrollWidth,windowHeight:h}).then(function(canvas){var a=document.createElement('a');a.download='HRAS国内考勤分析看板_'+new Date().toISOString().slice(0,10)+'.png';a.href=canvas.toDataURL('image/png');a.click()})}
 
 /* ===== INIT ===== */
 function init(){
