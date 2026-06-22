@@ -446,7 +446,8 @@ function initInsightCards(){
   const total=PERS.length,formal=PERS.filter(p=>p.status==='正式').length,trial=PERS.filter(p=>p.status==='试用').length;
   document.getElementById('iv-people').textContent=total;
   document.getElementById('iv-people-desc').innerHTML=`正式 <strong>${formal}</strong> · 试用 <strong>${trial}</strong>`;
-  document.getElementById('iv-people-badge').textContent=`覆盖 ${DEPT.filter(d=>d.dept!=='合计').length} 个部门`;
+  var _allPersDepts=[];PERS.forEach(function(p){if(_allPersDepts.indexOf(p.dept)<0)_allPersDepts.push(p.dept)});
+  document.getElementById('iv-people-badge').textContent=`覆盖 ${_allPersDepts.length} 个部门`;
 
   const avgFlow=DEPT_TOTAL.wd_flow_total/DEPT_TOTAL.wd_days;
   document.getElementById('iv-flow').textContent=fmt(avgFlow,2)+'h';
@@ -594,7 +595,7 @@ function renderPersonTable(){
 /* ===== DEPT TABLE ===== */
 function renderDeptTable(){
   const D=DEPT.filter(d=>d.dept!=='合计'),tbody=document.getElementById('deptTbody');
-  function renderRows(rows){tbody.innerHTML=rows.map(d=>{const isT=d.dept==='合计';return`<tr class="${isT?'total-row':''}"><td>${d.dept}</td><td class="${heatCls(d.wd_ot_avg,[0.7,1.5])}">${fmt(d.wd_ot_avg)}</td><td><span class="rank-badge ${rankCls(d.wd_ot_rank)}">${d.wd_ot_rank||'-'}</span></td><td class="${heatCls(d.wd_flow_avg,[0.3,0.8])}">${fmt(d.wd_flow_avg)}</td><td><span class="rank-badge ${rankCls(d.wd_flow_rank)}">${d.wd_flow_rank||'-'}</span></td><td class="${heatCls(d.nwd_ot_avg,[0.1,0.3])}">${fmt(d.nwd_ot_avg)}</td><td><span class="rank-badge ${rankCls(d.nwd_ot_rank)}">${d.nwd_ot_rank||'-'}</span></td><td class="${heatCls(d.nwd_flow_avg,[0.05,0.2])}">${fmt(d.nwd_flow_avg)}</td><td><span class="rank-badge ${rankCls(d.nwd_flow_rank)}">${d.nwd_flow_rank||'-'}</span></td><td class="${heatCls(d.avg_daily_hours,[7.5,8.5])}">${fmt(d.avg_daily_hours,1)}</td><td><span class="rank-badge ${rankCls(d.avg_daily_rank)}">${d.avg_daily_rank||'-'}</span></td></tr>`}).join('')}
+  function renderRows(rows){const dh=function(rank,isT){if(isT||rank<=3)return'heat-high';if(rank>=12)return'heat-low';return''};tbody.innerHTML=rows.map(d=>{const isT=d.dept==='合计';return`<tr class="${isT?'total-row':''}"><td>${d.dept}</td><td class="${dh(d.wd_ot_rank,isT)}">${fmt(d.wd_ot_avg)}</td><td><span class="rank-badge ${rankCls(d.wd_ot_rank)}">${d.wd_ot_rank||'-'}</span></td><td class="${dh(d.wd_flow_rank,isT)}">${fmt(d.wd_flow_avg)}</td><td><span class="rank-badge ${rankCls(d.wd_flow_rank)}">${d.wd_flow_rank||'-'}</span></td><td class="${dh(d.nwd_ot_rank,isT)}">${fmt(d.nwd_ot_avg)}</td><td><span class="rank-badge ${rankCls(d.nwd_ot_rank)}">${d.nwd_ot_rank||'-'}</span></td><td class="${dh(d.nwd_flow_rank,isT)}">${fmt(d.nwd_flow_avg)}</td><td><span class="rank-badge ${rankCls(d.nwd_flow_rank)}">${d.nwd_flow_rank||'-'}</span></td><td class="${dh(d.avg_daily_rank,isT)}">${fmt(d.avg_daily_hours,1)}</td><td><span class="rank-badge ${rankCls(d.avg_daily_rank)}">${d.avg_daily_rank||'-'}</span></td></tr>`}).join('')}
   renderRows([...D,DEPT_TOTAL]);
   document.querySelectorAll('.dept-table .sortable').forEach(function(th){th.onclick=function(){var col=th.dataset.col;var asc=th.classList.contains('sorted')&&!th.classList.contains('asc');document.querySelectorAll('.dept-table .sortable').forEach(function(h){h.classList.remove('sorted','asc')});th.classList.add('sorted');if(asc)th.classList.add('asc');renderRows([...[...D].sort(function(a,b){return asc?((a[col]||0)-(b[col]||0)):((b[col]||0)-(a[col]||0))}),DEPT_TOTAL])}});
 }
@@ -605,6 +606,8 @@ function exportPNG(){var el=document.getElementById('dashboard');var h=el.scroll
 /* ===== INIT ===== */
 function init(){
   const sel=document.getElementById('filterDept');BU_LIST.forEach(bu=>{const o=document.createElement('option');o.value=bu;o.textContent=bu;sel.appendChild(o)});
+  // Add 直挂 to person table filter only
+  if(PERS.some(p=>p.dept==='直挂')){const o=document.createElement('option');o.value='直挂';o.textContent='直挂';sel.appendChild(o)}
   const rSel=document.getElementById('riskDeptFilter');BU_LIST.forEach(bu=>{const o=document.createElement('option');o.value=bu;o.textContent=bu;rSel.appendChild(o)});
   // Disable 加班维度 when 关注类型 is 日均工时
   document.getElementById('personRiskType').addEventListener('change',function(){document.getElementById('riskOtType').disabled=(this.value==='daily_hours')});
